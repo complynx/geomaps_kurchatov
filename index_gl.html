@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="https://www.webglearth.com/v2/api.js"></script>
+    <title>test page gl</title>
+    <script type="module">
+        window.addEventListener("load", ()=>{
+            window.map = new WE.map('map', {atmosphere: true, center: [0, 0], zoom: 0});
+            WE.tileLayer('https://maps.tilehosting.com/styles/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm', {
+              minZoom: 0,
+              maxZoom: 18,
+              attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+            }).addTo(window.map);
+            window.map_provider = WE;
+        }, {once:true});
+    </script>
+    <style>
+        html, body{
+            margin:0;
+            width: 100%;
+            height: 100%;
+        }
+        #map{
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
