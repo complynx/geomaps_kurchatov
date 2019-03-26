@@ -1,0 +1,15 @@
+{
+  "layers": [
+    {
+      "title": "Спутниковая карта",
+      "provider": "OpenStreetMap",
+      "zoom": [0, 20],
+      "tiles": "https://maps.tilehosting.com/data/satellite/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
+    },{
+      "title": "Контуры",
+      "provider": "OpenStreetMap",
+      "zoom": [0, 20],
+      "tiles": "https://maps.tilehosting.com/data/v3/{z}/{x}/{y}.pbf?key=yD3ZrAoxDxz16c992fsm"
+    }
+  ]
+}

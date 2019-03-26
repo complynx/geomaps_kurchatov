@@ -9,3 +9,42 @@ html, body{
     background: #000000;
     position: absolute;
 }
+.hidden,
+body:not(.gl) .w-gl,
+body.gl .no-gl{
+    display: none;
+}
+
+label.dropdown{
+    display: block;
+}
+
+label.dropdown>input[type=checkbox],
+label.dropdown>input[type=checkbox]:not(:checked)+.content{
+    display: none;
+}
+.map-gui>*{
+    z-index: 400;
+    position: absolute;
+}
+.buttons{
+    top:0;
+    right:0;
+    padding:.2em;
+}
+.buttons>*{
+    display: inline-block;
+    margin:0.2em;
+    border-radius: .2em;
+    padding:.2em .4em;
+    background: rgba(0,40,80,.8);
+    color:#fff;
+    transition: .2s;
+}
+.buttons>*:hover{
+    background: rgba(0,80,120,.8);
+    transition: .2s;
+}
+.buttons a{
+    text-decoration: none;
+}

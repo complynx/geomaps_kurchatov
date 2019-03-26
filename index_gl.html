@@ -6,14 +6,14 @@
     <title>test page gl</title>
     <link rel="stylesheet" href="./main.css"/>
     <script type="module">
-        import {init} from "./map_init.js";
+        import {init} from "./scripts/map_init.js";
         window.addEventListener("load", ()=>{
-            let map = new WE.map('map', {atmosphere: true, center: [0, 0], zoom: 0});
+            let map = new WE.map('map', {atmosphere: true, center: [55, 37], zoom: 3});
             init(map, WE);
         }, {once:true});
     </script>
 </head>
-<body>
+<body class="gl">
     <div id="map"></div>
 </body>
 </html>
