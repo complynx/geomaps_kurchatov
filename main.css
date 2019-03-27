@@ -2,6 +2,8 @@ html, body{
     margin:0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 #map{
     width: 100%;
@@ -9,6 +11,30 @@ html, body{
     background: #000000;
     position: absolute;
 }
+
+.gl-fail{
+    text-align: center;
+    padding-top: 20%;
+    font-size: 1.5em;
+    overflow: hidden;
+}
+
+.gl-fail a{
+    text-decoration: none;
+    color:#fff;
+}
+
+.mfi{
+    font-family: "mapfont";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .hidden,
 body:not(.gl) .w-gl,
 body.gl .no-gl{
@@ -27,6 +53,17 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     z-index: 400;
     position: absolute;
 }
+.map-layers{
+    margin:0.2em;
+    border-radius: .2em;
+    padding:.4em .6em;
+    background: rgba(0,40,80,.8);
+    color:#fff;
+}
+.map-layers .layers-toggle-button{
+    font-size: 1.5em;
+    padding:.1em .1em;
+}
 .buttons{
     top:0;
     right:0;
@@ -36,10 +73,13 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     display: inline-block;
     margin:0.2em;
     border-radius: .2em;
-    padding:.2em .4em;
+    padding:.4em .6em;
     background: rgba(0,40,80,.8);
     color:#fff;
     transition: .2s;
+    height: 1.2em;
+    font-size: 1.5em;
+    text-align: center;
 }
 .buttons>*:hover{
     background: rgba(0,80,120,.8);

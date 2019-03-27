@@ -7,9 +7,27 @@
     <link rel="stylesheet" href="./main.css"/>
     <script type="module">
         import {init} from "./scripts/map_init.js";
+        import {dirname} from "/modules/utils.js";
+
         window.addEventListener("load", ()=>{
-            let map = new WE.map('map', {atmosphere: true, center: [55, 37], zoom: 3});
-            init(map, WE);
+            try {
+                let map = new WE.map('map', {
+                    center: [55, 37],
+                    zoom: 3
+                });
+                init(map, WE);
+            }catch (e) {
+                let m = document.querySelector("#map");
+                m.classList.add('gl-fail');
+                m.innerHTML=`
+                <a href="./index.html">Failed to initialize WebGL, switch to 2D view.<br>
+                Ошибка инициализации WebGL, переключить на режим 2D.</a>
+                `;
+                setTimeout(()=>{
+                    location.replace(location.origin + dirname(location.pathname) + '/index.html'
+                        + (location.search || "") + (location.hash || ""));
+                }, 2000);
+            }
         }, {once:true});
     </script>
 </head>

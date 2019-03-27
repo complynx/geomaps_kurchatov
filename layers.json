@@ -1,15 +1,36 @@
 {
   "layers": [
     {
+      "title": "Надписи",
+      "provider": "CARTO — OpenStreetMap contributors",
+      "zoom": [0, 22],
+      "tiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+    },
+    {
       "title": "Спутниковая карта",
-      "provider": "OpenStreetMap",
-      "zoom": [0, 20],
-      "tiles": "https://maps.tilehosting.com/data/satellite/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
+      "provider": "Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+      "zoom": [0, 17],
+      "tiles": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
     },{
-      "title": "Контуры",
+      "title": "Спутниковая c контурами",
+      "provider": "MapTiler — OpenStreetMap contributors",
+      "zoom": [0, 22],
+      "tiles": "https://maps.tilehosting.com/styles/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
+    },{
+      "title": "Топография",
+      "provider": "OpenStreetMap",
+      "zoom": [0, 18],
+      "tiles": "https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png"
+    },{
+      "title": "Тёмные контуры",
+      "provider": "CARTO — OpenStreetMap contributors",
+      "zoom": [0, 22],
+      "tiles": "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+    },{
+      "title": "Стандартная",
       "provider": "OpenStreetMap",
       "zoom": [0, 20],
-      "tiles": "https://maps.tilehosting.com/data/v3/{z}/{x}/{y}.pbf?key=yD3ZrAoxDxz16c992fsm"
+      "tiles": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     }
   ]
 }
