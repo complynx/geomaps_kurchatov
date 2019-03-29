@@ -3,6 +3,9 @@ html, body{
     width: 100%;
     height: 100%;
     overflow: hidden;
+    --map-gui-bg: rgba(0,40,80,.7);
+    --map-gui-fg: #fff;
+    --map-gui-fg-hover: #6cf;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 #map{
@@ -57,12 +60,30 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     margin:0.2em;
     border-radius: .2em;
     padding:.4em .6em;
-    background: rgba(0,40,80,.8);
-    color:#fff;
+    background: var(--map-gui-bg);
+    color: var(--map-gui-fg);
+}
+.map-layers.editor-hidden .layers-editor{
+    transition: .5s;
+    height: 0;
+    width: 0;
+    overflow-y: hidden;
+}
+.layers-editor{
+    transition: .5s;
+    overflow-x: hidden;
+    max-height: calc(100vh - 8em);
 }
 .map-layers .layers-toggle-button{
     font-size: 1.5em;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
     padding:.1em .1em;
+    cursor: pointer;
+}
+.map-layers .layers-toggle-button:hover{
+    color: var(--map-gui-fg-hover);
 }
 .buttons{
     top:0;
@@ -74,16 +95,14 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     margin:0.2em;
     border-radius: .2em;
     padding:.4em .6em;
-    background: rgba(0,40,80,.8);
-    color:#fff;
-    transition: .2s;
+    background: var(--map-gui-bg);
+    color: var(--map-gui-fg);
     height: 1.2em;
     font-size: 1.5em;
     text-align: center;
 }
 .buttons>*:hover{
-    background: rgba(0,80,120,.8);
-    transition: .2s;
+    color: var(--map-gui-fg-hover);
 }
 .buttons a{
     text-decoration: none;

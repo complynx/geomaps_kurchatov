@@ -12,12 +12,16 @@ let html = `<div class="map-gui">
         </div>
     </div>
 </div>`;
-let layer_card_tpl=``;
+let layer_list_card_tpl=`
+<div class="layer-list-card">
+    <h1 class="title">{info.title}</h1>
+    <span class="mfi">&#xf1db;<input type="range" min="0" max="1" step="0.001" name="opacity">&#xf111;</span>
+</div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
 import {XConsole} from "/modules/console_enhancer.js";
 import {vformat} from "/modules/format.js";
-import {load_css} from "/modules/dom_utils.js";
+import {load_css, insertAt} from "/modules/dom_utils.js";
 import {basename, dirname} from "/modules/utils.js";
 
 load_css('./icons/css/mapfont.css');
@@ -30,32 +34,72 @@ let $R=(e)=>e && e.parentNode && e.parentNode.removeChild(e);
 
 let GUI, layers_editor, L, map, layers={};
 
+function create_map_layer(layer_info){
+    let layer;
+    if(layer_info.tiles){
+        layer = L.tileLayer(layer_info.tiles, {
+            minNativeZoom: layer_info.zoom[0],
+            maxNativeZoom: layer_info.zoom[1]
+        });
+    }
+    return layer;
+}
+
+class Layer{
+    constructor(layer_name, opt){
+        if(!opt) opt={};
+        this.info = layers.DB.layers[layer_name];
+        this.name = layer_name;
+        this.map = create_map_layer(this.info);
+        this.options = opt;
+        let html = $C(vformat(layer_list_card_tpl, this));
+        this.el = $('div', html);
+        let layers_container = $('.map-layers .layers-list', GUI);
+
+        this.options.opacity = opt.opacity || this.info.opacity;
+        if(opt.zIndex && opt.zIndex<layers.map.length) {
+            layers.map.splice(opt.zIndex, 0, this);
+        } else {
+            layers.map.push(this);
+            this.map.setZIndex(layers.map.length);
+        }
+        insertAt(layers_container, this.el, layers.map.length - 1 - layers.map.indexOf(this));
+        this.map.addTo(map);
+
+        if(this.options.opacity !== undefined){
+            this.setOpacity(this.options.opacity);
+        }else{
+            this.setOpacity(1);
+        }
+    }
+    setOpacity(opacity){
+        this.map.setOpacity(opacity);
+    }
+}
+
 function getLayers(){
-    fetch("./layers.json")
+    return fetch("./layers.json")
         .then(resp=>resp.json())
         .then(layers_db=>{
             layers.DB = layers_db;
+            for(let i in layers_db.layers){
+                layers_db.layers[i].name = i;
+            }
         })
-        .catch(console.error);
+        .catch(console.error.bind(console));
 }
 
 export function init(_map, _L){
     L = _L;
-    window.map = map = _map;
-    L.tileLayer('https://maps.tilehosting.com/styles/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm', {
-        maxZoom: 22,
-        minZoom: 0
-    }).addTo(map);
-    // let tl = L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-    //     maxZoom: 9, //MODIS_Terra_CorrectedReflectance_Bands367 //VIIRS_CityLights_2012
-    //     bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-    //     format: 'jpg',
-    //     time: '',
-    //     tilematrixset: 'GoogleMapsCompatible_Level',
-    //     minZoom: 0
-    // });
-    // tl.addTo(map);
-    // tl.setOpacity(0.7);
+    map = _map;
+    window.GK = [GUI, layers_editor, L, map, layers];
+
+    layers.map = [];
+    getLayers().then(()=>{
+        new Layer("u_sat");
+        new Layer("u_coastlines");
+        new Layer("u_labels");
+    });
 
     document.body.appendChild($C(html));
     GUI = $('.map-gui');

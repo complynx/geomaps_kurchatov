@@ -15,5 +15,7 @@
 .mfi-eye:before { content: '\e80f'; } /* '' */
 .mfi-cog:before { content: '\e810'; } /* '' */
 .mfi-globe:before { content: '\f018'; } /* '' */
+.mfi-circle:before { content: '\f111'; } /* '' */
+.mfi-circle-thin:before { content: '\f1db'; } /* '' */
 .mfi-sliders:before { content: '\f1de'; } /* '' */
 .mfi-map:before { content: '\f278'; } /* '' */
