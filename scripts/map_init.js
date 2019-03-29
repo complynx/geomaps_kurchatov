@@ -37,10 +37,12 @@ let GUI, layers_editor, L, map, layers={};
 function create_map_layer(layer_info){
     let layer;
     if(layer_info.tiles){
-        layer = L.tileLayer(layer_info.tiles, {
+        let opt = {
             minNativeZoom: layer_info.zoom[0],
             maxNativeZoom: layer_info.zoom[1]
-        });
+        };
+        if(layer_info.bounds) opt.bounds = layer_info.bounds;
+        layer = L.tileLayer(layer_info.tiles, opt);
     }
     return layer;
 }
