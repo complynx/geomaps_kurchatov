@@ -107,3 +107,99 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .buttons a{
     text-decoration: none;
 }
+.layers-list{
+    border-top: 1px solid #fff;
+}
+.layer-list-card{
+    border-bottom: 1px solid #fff;
+}
+.layer-list-card .title{
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+    font-weight: 600;
+}
+.opacity{
+    display: grid;
+    grid-template: auto/ 1.5em 1fr;
+    height: 1.5em;
+    overflow: hidden;
+    justify-items: stretch;
+    align-items: center;
+}
+
+.opacity [type=range]{
+    -webkit-appearance: none;
+    margin: 0;
+    width: 100%;
+    background: none;
+    --thumb-border-color:#fff;
+    --thumb-bg-color:rgba(0,40,80,0);
+    --track-box-shadow-color:#fff;
+}
+.opacity [type=range]:focus {
+    outline: none;
+}
+.opacity [type=range]::-moz-range-track {
+    height: .7em;
+    cursor: pointer;
+    background:
+        linear-gradient(to right, rgba(255,255,255,0.5) 0%,rgba(255,255,255,1) 100%),
+        url(./res/checkerboard.png) left top repeat,
+        rgba(255,255,255,.5);
+    border-radius: .3em;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em var(--track-box-shadow-color);
+}
+.opacity [type=range]::-moz-range-thumb {
+    border: .3em solid var(--thumb-border-color);
+    height: .7em;
+    width: .7em;
+    border-radius:50%;
+    background: var(--thumb-bg-color);
+    cursor: pointer;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
+}
+.opacity [type=range]::-webkit-slider-runnable-track {
+    height: .7em;
+    cursor: pointer;
+    background:
+        linear-gradient(to right, rgba(255,255,255,0.5) 0%,rgba(255,255,255,1) 100%),
+        url(./res/checkerboard.png) left top repeat,
+        rgba(255,255,255,.5);
+    border-radius: .3em;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em var(--track-box-shadow-color);
+}
+.opacity [type=range]::-webkit-slider-thumb {
+    font-size: 1.5em;
+    margin-top: -.1em;
+    border: .15em solid var(--thumb-border-color);
+    height: .7em;
+    width: .7em;
+    -webkit-appearance: none;
+    border-radius:50%;
+    background: var(--thumb-bg-color);
+    cursor: pointer;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
+}
+.opacity [type=range]::-ms-track {
+    font-size:.9em;
+    height: .7em;
+    cursor: pointer;
+    border: 0px none;
+    background:
+        linear-gradient(to right, rgba(255,255,255,0.5) 0%,rgba(255,255,255,1) 100%),
+        url(./res/checkerboard.png) left top repeat,
+        rgba(255,255,255,.5);
+    border-radius: .3em;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em var(--track-box-shadow-color);
+}
+.opacity [type=range]::-ms-thumb {
+    font-size:.8em;
+    border: .3em solid var(--thumb-border-color);
+    height: .7em;
+    width: .7em;
+    border-radius:50%;
+    background: var(--thumb-bg-color);
+    cursor: pointer;
+    box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
+}

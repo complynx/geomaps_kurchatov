@@ -15,7 +15,7 @@ let html = `<div class="map-gui">
 let layer_list_card_tpl=`
 <div class="layer-list-card">
     <h1 class="title">{info.title}</h1>
-    <span class="mfi">&#xf1db;<input type="range" min="0" max="1" step="0.001" name="opacity">&#xf111;</span>
+    <div class="opacity"><span class="mfi">&#xe800;</span><input type="range" min="0" max="1" step="0.001" name="opacity"></div>
 </div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
@@ -56,6 +56,8 @@ class Layer{
         this.options = opt;
         let html = $C(vformat(layer_list_card_tpl, this));
         this.el = $('div', html);
+        let op_i = $('.opacity input', this.el);
+        op_i.addEventListener('input', ev => this.setOpacity(ev.target.value));
         let layers_container = $('.map-layers .layers-list', GUI);
 
         this.options.opacity = opt.opacity || this.info.opacity;
@@ -76,6 +78,8 @@ class Layer{
     }
     setOpacity(opacity){
         this.map.setOpacity(opacity);
+        let op_i = $('.opacity input', this.el);
+        op_i.value = opacity;
     }
 }
 

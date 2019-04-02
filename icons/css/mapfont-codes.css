@@ -1,4 +1,5 @@
 
+.mfi-transparency:before { content: '\e800'; } /* '' */
 .mfi-cancel-circled:before { content: '\e801'; } /* '' */
 .mfi-cancel-squared:before { content: '\e802'; } /* '' */
 .mfi-plus:before { content: '\e803'; } /* '' */
