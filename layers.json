@@ -16,7 +16,7 @@
       "title": "Спутниковая c контурами",
       "provider": "MapTiler — OpenStreetMap contributors",
       "zoom": [0, 22],
-      "tiles": "https://maps.tilehosting.com/styles/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
+      "tiles": "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
     },
     "u_topo": {
       "title": "Топография",
