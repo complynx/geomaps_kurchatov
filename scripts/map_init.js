@@ -14,8 +14,13 @@ let html = `<div class="map-gui">
 </div>`;
 let layer_list_card_tpl=`
 <div class="layer-list-card">
-    <h1 class="title">{info.title}</h1>
-    <div class="opacity"><span class="mfi">&#xe800;</span><input type="range" min="0" max="1" step="0.001" name="opacity"></div>
+    <div class="drag-handle mfi">&#xE812;</div><div>
+        <div class="buttons">
+            <span class="del mfi">&#xe80d;</span>
+        </div>
+        <h1 class="title">{info.title}</h1>
+        <div class="opacity"><span class="mfi">&#xe800;</span><input type="range" min="0" max="1" step="0.001" name="opacity"></div>
+    </div>
 </div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
@@ -33,6 +38,7 @@ let $A=(s, e=document)=>e && e.querySelectorAll(s);
 let $R=(e)=>e && e.parentNode && e.parentNode.removeChild(e);
 
 let GUI, layers_editor, L, map, layers={};
+let placeholder = $('div', $C('<div class="drag-placeholder">&nbsp;</div>'));
 
 function create_map_layer(layer_info){
     let layer;
@@ -52,34 +58,102 @@ class Layer{
         if(!opt) opt={};
         this.info = layers.DB.layers[layer_name];
         this.name = layer_name;
-        this.map = create_map_layer(this.info);
         this.options = opt;
         let html = $C(vformat(layer_list_card_tpl, this));
         this.el = $('div', html);
-        let op_i = $('.opacity input', this.el);
-        op_i.addEventListener('input', ev => this.setOpacity(ev.target.value));
+        $('.opacity input', this.el).addEventListener('input', ev => this.setOpacity(ev.target.value));
+        $('.buttons .del', this.el).addEventListener('click', () => this.remove());
+        $('.drag-handle', this.el).addEventListener('mousedown', (ev) => this.dragstart(ev));
         let layers_container = $('.map-layers .layers-list', GUI);
 
         this.options.opacity = opt.opacity || this.info.opacity;
-        if(opt.zIndex && opt.zIndex<layers.map.length) {
-            layers.map.splice(opt.zIndex, 0, this);
-        } else {
-            layers.map.push(this);
-            this.map.setZIndex(layers.map.length);
-        }
-        insertAt(layers_container, this.el, layers.map.length - 1 - layers.map.indexOf(this));
-        this.map.addTo(map);
 
-        if(this.options.opacity !== undefined){
-            this.setOpacity(this.options.opacity);
-        }else{
-            this.setOpacity(1);
+        layers.map.push(this);
+        insertAt(layers_container, this.el, 0);
+
+        this.create_map_level();
+        if(opt.level) this.change_level(opt.level);
+    }
+    dragstart(ev){
+        this.el.classList.add('dragging');
+        this.el.style.width = this.el.clientWidth + 'px';
+        this.el.parentNode.insertBefore(placeholder, this.el);
+        placeholder.style.height = this.el.clientHeight + 'px';
+
+        let move_reg = (ev)=>{
+            ev.preventDefault();
+            ev.stopPropagation();
+            let rect = placeholder.getBoundingClientRect();
+            if(rect.top > ev.clientY){
+                placeholder.parentNode.insertBefore(placeholder, placeholder.previousSibling);
+            }
+            if(rect.bottom < ev.clientY){
+                if(placeholder.nextSibling && placeholder.nextSibling.nextSibling)
+                    placeholder.parentNode.insertBefore(placeholder, placeholder.nextSibling.nextSibling);
+                else placeholder.parentNode.appendChild(placeholder);
+            }
+
+            this.el.style.top = (ev.clientY - this.el.clientHeight/2) + "px";
+            this.el.style.left = (ev.clientX - this.el.clientWidth/2) + "px";
+        };
+        let finish_reg = (ev)=>{
+            move_reg(ev);
+            this.el.style.top = '';
+            this.el.style.left = '';
+            this.el.style.width = '';
+            placeholder.style.height = '';
+
+            window.removeEventListener('mousemove', move_reg, {capture: true});
+            window.removeEventListener('mouseup', finish_reg, {capture: true});
+            this.el.classList.remove('dragging');
+            placeholder.parentNode.insertBefore(this.el, placeholder);
+            $R(placeholder);
+            let els = Array.from(this.el.parentNode.children);
+            this.change_level(els.length - 1 - els.indexOf(this.el));
+        };
+
+        window.addEventListener('mousemove', move_reg, {capture: true});
+        window.addEventListener('mouseup', finish_reg, {capture: true});
+
+        move_reg(ev);
+    }
+    create_map_level(){
+        if(this.map) this.map.removeFrom(map);
+        this.map = create_map_layer(this.info);
+        this.map.addTo(map);
+        this.setOpacity(this.options.opacity);
+        if(this.map.setZIndex) this.map.setZIndex(layers.map.indexOf(this));
+    }
+    change_level(index){
+        index = parseInt(index);
+        let cindex = layers.map.indexOf(this);
+        if(cindex < 0) throw new Error("Couldn't find the layer");
+        if(cindex === index) return;
+        if(index>=0 && index < layers.map.length){
+            layers.map.splice(cindex, 1);
+            layers.map.splice(index, 0, this);
+            let p = this.el.parentNode;
+            p.removeChild(this.el);
+            insertAt(p, this.el, index);
+            layers.map.forEach((i, n)=>{
+                if(i.map.setZIndex) i.map.setZIndex(n);
+                else i.create_map_level();
+            });
         }
     }
+    remove(){
+        $R(this.el);
+        let cindex = layers.map.indexOf(this);
+        if(cindex < 0) throw new Error("Couldn't find the layer");
+        layers.map.splice(cindex, 1);
+        this.map.removeFrom(map);
+    }
     setOpacity(opacity){
+        if(opacity === undefined) opacity = 1;
         this.map.setOpacity(opacity);
         let op_i = $('.opacity input', this.el);
         op_i.value = opacity;
+        this.options.opacity = opacity;
     }
 }
 

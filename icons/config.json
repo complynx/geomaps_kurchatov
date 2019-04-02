@@ -141,6 +141,32 @@
       ]
     },
     {
+      "uid": "c709da589c923ba3c2ad48d9fc563e93",
+      "css": "cancel",
+      "code": 59405,
+      "src": "entypo"
+    },
+    {
+      "uid": "2cfb3f2b46b34a1790aec0aa846297b6",
+      "css": "menu",
+      "code": 59409,
+      "src": "entypo"
+    },
+    {
+      "uid": "5eb6897e5e0f02e3c3ebfdc5229b5cbd",
+      "css": "drag",
+      "code": 59410,
+      "src": "custom_icons",
+      "selected": true,
+      "svg": {
+        "path": "M1.7 300L1000 300 1000 360 1.7 360ZM1.7 460L1000 460 1000 520 1.7 520ZM1.7 620L1000 620 1000 680 1.7 680ZM483.9 60L567.8 205.4 400 205.4ZM483.9 945.4L400 800 567.8 800Z",
+        "width": 1000
+      },
+      "search": [
+        "drag"
+      ]
+    },
+    {
       "uid": "c71129da4e8ba026bb5f77ccd195a08c",
       "css": "transparency-thin",
       "code": 59405,

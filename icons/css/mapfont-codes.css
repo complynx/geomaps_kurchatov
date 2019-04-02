@@ -12,9 +12,12 @@
 .mfi-help-circled:before { content: '\e80a'; } /* '' */
 .mfi-info-circled:before { content: '\e80b'; } /* '' */
 .mfi-layers:before { content: '\e80c'; } /* '' */
+.mfi-cancel:before { content: '\e80d'; } /* '' */
 .mfi-eye-off:before { content: '\e80e'; } /* '' */
 .mfi-eye:before { content: '\e80f'; } /* '' */
 .mfi-cog:before { content: '\e810'; } /* '' */
+.mfi-menu:before { content: '\e811'; } /* '' */
+.mfi-drag:before { content: '\e812'; } /* '' */
 .mfi-globe:before { content: '\f018'; } /* '' */
 .mfi-circle:before { content: '\f111'; } /* '' */
 .mfi-circle-thin:before { content: '\f1db'; } /* '' */

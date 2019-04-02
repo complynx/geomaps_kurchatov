@@ -27,6 +27,9 @@ html, body{
     color:#fff;
 }
 
+.dragging{
+    position: absolute;
+}
 .mfi{
     font-family: "mapfont";
     font-style: normal;
@@ -62,6 +65,8 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     padding:.4em .6em;
     background: var(--map-gui-bg);
     color: var(--map-gui-fg);
+    top: .2em;
+    left:.2em;
 }
 .map-layers.editor-hidden .layers-editor{
     transition: .5s;
@@ -85,12 +90,12 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .map-layers .layers-toggle-button:hover{
     color: var(--map-gui-fg-hover);
 }
-.buttons{
+.map-gui>.buttons{
     top:0;
     right:0;
     padding:.2em;
 }
-.buttons>*{
+.map-gui>.buttons>*{
     display: inline-block;
     margin:0.2em;
     border-radius: .2em;
@@ -101,10 +106,10 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     font-size: 1.5em;
     text-align: center;
 }
-.buttons>*:hover{
+.map-gui>.buttons>*:hover{
     color: var(--map-gui-fg-hover);
 }
-.buttons a{
+.map-gui>.buttons a{
     text-decoration: none;
 }
 .layers-list{
@@ -112,6 +117,30 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 }
 .layer-list-card{
     border-bottom: 1px solid #fff;
+    display: grid;
+    grid-template: auto/ 1.5em 1fr;
+    justify-items: stretch;
+    align-items: center;
+}
+.layer-list-card>.drag-handle{
+    font-size: 1.2em;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.layer-list-card>.drag-handle:hover{
+    color: var(--map-gui-fg-hover);
+}
+.layers-list>.drag-placeholder{
+    height:2em;
+    border-bottom: 1px solid #fff;
+}
+.layer-list-card.dragging{
+    background: var(--map-gui-bg);
+    border-radius: .2em;
+    border-bottom: 0 none;
+    padding: .2em .4em;
 }
 .layer-list-card .title{
     font-size: 1em;
@@ -133,7 +162,7 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     margin: 0;
     width: 100%;
     background: none;
-    --thumb-border-color:#fff;
+    --thumb-border-color:var(--map-gui-fg);
     --thumb-bg-color:rgba(0,40,80,0);
     --track-box-shadow-color:#fff;
 }
@@ -159,6 +188,9 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     cursor: pointer;
     box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
 }
+.opacity [type=range]:hover::-moz-range-thumb {
+    border-color: var(--map-gui-fg-hover);
+}
 .opacity [type=range]::-webkit-slider-runnable-track {
     height: .7em;
     cursor: pointer;
@@ -181,6 +213,9 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     cursor: pointer;
     box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
 }
+.opacity [type=range]:hover::-webkit-slider-thumb {
+    border-color: var(--map-gui-fg-hover);
+}
 .opacity [type=range]::-ms-track {
     font-size:.9em;
     height: .7em;
@@ -202,4 +237,19 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     background: var(--thumb-bg-color);
     cursor: pointer;
     box-shadow: inset 0.05em 0.07em 0.2em 0em rgba(0,0,0,.5), 0.1em 0.1em 0.2em rgba(0,0,0,.5);
+}
+.opacity [type=range]:hover::-ms-thumb {
+    border-color: var(--map-gui-fg-hover);
+}
+.layer-list-card .buttons{
+    float: right;
+}
+.layer-list-card .buttons>*{
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.layer-list-card .buttons>*:hover{
+    color:var(--map-gui-fg-hover);
 }
