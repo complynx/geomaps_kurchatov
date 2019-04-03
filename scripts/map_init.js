@@ -19,7 +19,7 @@ let html = `<div class="map-gui">
     </div>
     
     <div class="layers-search hidden">
-        <div class="win-handle">Выбор слоя</div>
+        <input type="text" name="search" placeholder="Поиск..."><span class="close mfi">&#xe80d;</span>
         <div class="layers-list"></div>
     </div>
 </div>`;

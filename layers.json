@@ -4,51 +4,71 @@
       "title": "Стандартная",
       "provider": "OpenStreetMap",
       "zoom": [0, 20],
-      "tiles": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      "tiles": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "keywords": "стандартная standard карта osm openstreetmap map база base pad"
     },
     "u_sat": {
       "title": "Спутниковая карта",
       "provider": "Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
       "zoom": [0, 17],
-      "tiles": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      "tiles": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "keywords": "карта satellite спутниковая esri map база base pad"
     },
     "u_sat_mapped": {
       "title": "Спутниковая c контурами",
       "provider": "MapTiler — OpenStreetMap contributors",
       "zoom": [0, 22],
-      "tiles": "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm"
+      "tiles": "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=yD3ZrAoxDxz16c992fsm",
+      "keywords": "карта satellite contur контуры спутниковая osm openstreetmap map база base pad"
     },
     "u_topo": {
       "title": "Топография",
       "provider": "OpenStreetMap",
       "zoom": [0, 18],
-      "tiles": "https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png"
+      "tiles": "https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
+      "keywords": "стандартная standard topography топография карта osm openstreetmap map база base pad"
     },
     "u_coastlines_roads": {
       "title": "Контуры и дороги",
       "tiles": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/Reference_Features/default//GoogleMapsCompatible_Level{maxNativeZoom}/{z}/{y}/{x}.png",
       "zoom": [1, 9],
       "bounds": [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-      "provider": "NASA GIBS — OpenStreetMap contributors"
+      "provider": "NASA GIBS — OpenStreetMap contributors",
+      "keywords": "стандартная standard contour контуры дороги roads карта osm openstreetmap map база base pad"
     },
     "u_coastlines": {
       "title": "Контуры",
       "tiles": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/Coastlines/default//GoogleMapsCompatible_Level{maxNativeZoom}/{z}/{y}/{x}.png",
       "zoom": [1, 9],
       "bounds": [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-      "provider": "NASA GIBS — OpenStreetMap contributors"
+      "provider": "NASA GIBS — OpenStreetMap contributors",
+      "keywords": "стандартная standard contour контуры карта osm openstreetmap map база base pad"
     },
     "u_dark": {
       "title": "Тёмные контуры",
       "provider": "CARTO — OpenStreetMap contributors",
       "zoom": [0, 22],
-      "tiles": "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+      "tiles": "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+      "keywords": "стандартная standard contour темная тёмная dark контуры карта osm openstreetmap map база base pad"
     },
     "u_labels": {
       "title": "Надписи",
       "provider": "CARTO — OpenStreetMap contributors",
       "zoom": [1, 22],
-      "tiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+      "tiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+      "keywords": "стандартная standard signs надписи карта osm openstreetmap map база base pad"
+    }
+  },
+  "categories": {
+    "Базовые карты": {
+      "subcategories": {
+        "Основы": {
+          "data": [ "u_osm", "u_dark", "u_topo", "u_sat_mapped", "u_sat"]
+        },
+        "Слои": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        }
+      }
     }
   }
 }
