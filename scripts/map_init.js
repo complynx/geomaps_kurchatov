@@ -3,6 +3,7 @@ Created by Complynx on 22.03.2019,
 http://complynx.net
  <complynx@yandex.ru> Daniel Drizhuk
 */
+
 let html = `<div class="map-gui">
     <div class="buttons">
         <a class="no-gl mfi" href="./index_gl.html" title="Открыть в виде 3D глобуса">&#xf018;</a>
@@ -16,9 +17,14 @@ let html = `<div class="map-gui">
             <div class="layers-buttons"><span class="add-layer">Добавить слой</span></div>
         </div>
     </div>
+    
+    <div class="layers-search hidden">
+        <div class="win-handle">Выбор слоя</div>
+        <div class="layers-list"></div>
+    </div>
 </div>`;
 let layer_list_card_tpl=`
-<div class="layer-list-card">
+<div class="layer-list-card" id="{id}">
     <div class="drag-handle mfi">&#xE812;</div><div>
         <div class="buttons">
             <span class="del mfi">&#xe80d;</span>
@@ -31,7 +37,7 @@ let layer_list_card_tpl=`
 import {createFragment as $C} from "/modules/create_dom.js";
 import {XConsole} from "/modules/console_enhancer.js";
 import {vformat} from "/modules/format.js";
-import {load_css, insertAt} from "/modules/dom_utils.js";
+import {load_css, insertAt, unique_id} from "/modules/dom_utils.js";
 import {basename, dirname} from "/modules/utils.js";
 
 load_css('./icons/css/mapfont.css');
@@ -61,6 +67,7 @@ function create_map_layer(layer_info){
 class Layer{
     constructor(layer_name, opt){
         if(!opt) opt={};
+        this.id = unique_id('layer');
         this.info = layers.DB.layers[layer_name];
         this.name = layer_name;
         this.options = opt;
@@ -73,7 +80,7 @@ class Layer{
 
         this.options.opacity = opt.opacity || this.info.opacity;
 
-        layers.map.push(this);
+        layers[this.id]= this;
         insertAt(layers_container, this.el, 0);
 
         this.create_map_level();
@@ -113,8 +120,7 @@ class Layer{
             this.el.classList.remove('dragging');
             placeholder.parentNode.insertBefore(this.el, placeholder);
             $R(placeholder);
-            let els = Array.from(this.el.parentNode.children);
-            this.change_level(els.length - 1 - els.indexOf(this.el));
+            Layer.update_z_indexes();
         };
 
         window.addEventListener('mousemove', move_reg, {capture: true});
@@ -127,31 +133,43 @@ class Layer{
         this.map = create_map_layer(this.info);
         this.map.addTo(map);
         this.setOpacity(this.options.opacity);
-        if(this.map.setZIndex) this.map.setZIndex(layers.map.indexOf(this));
+        if(this.map.setZIndex){
+            let els = Array.from(this.el.parentNode.children);
+            this.map.setZIndex(els.length - els.indexOf(this.el));
+        }
     }
     change_level(index){
         index = parseInt(index);
-        let cindex = layers.map.indexOf(this);
+        let el = this.el;
+        let els = Array.from(el.parentNode.children);
+        let cindex = els.indexOf(el);
         if(cindex < 0) throw new Error("Couldn't find the layer");
         if(cindex === index) return;
         if(index>=0 && index < layers.map.length){
-            layers.map.splice(cindex, 1);
-            layers.map.splice(index, 0, this);
             let p = this.el.parentNode;
             p.removeChild(this.el);
-            insertAt(p, this.el, index);
-            layers.map.forEach((i, n)=>{
-                if(i.map.setZIndex) i.map.setZIndex(n);
-                else i.create_map_level();
-            });
+            insertAt(p, this.el, els.length - 1 - index);
+            Layer.update_z_indexes();
+        }
+    }
+    static update_z_indexes(){
+        let els = Array.from($('.map-layers .layers-list', GUI).children);
+        for(let i=els.length - 1; i>=0; --i){
+            let el = els[i];
+            let l = layers[el.id];
+            if(l.map.setZIndex) l.map.setZIndex(els.length - i);
+            else l.create_map_level();
         }
     }
     remove(){
+        delete layers[this.id];
         $R(this.el);
-        let cindex = layers.map.indexOf(this);
-        if(cindex < 0) throw new Error("Couldn't find the layer");
-        layers.map.splice(cindex, 1);
         this.map.removeFrom(map);
+
+        delete this.el;
+        delete this.options;
+        delete this.map;
+        delete this.info;
     }
     setOpacity(opacity){
         if(opacity === undefined) opacity = 1;
@@ -160,6 +178,10 @@ class Layer{
         op_i.value = opacity;
         this.options.opacity = opacity;
     }
+}
+
+function layers_search() {
+    $('.layers-search', GUI).classList.remove('hidden');
 }
 
 function getLayers(){
@@ -194,6 +216,9 @@ export function init(_map, _L){
     layers_btn.addEventListener('click', ()=>{
         layers_container.classList.toggle('editor-hidden');
     });
+
+
+    $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search);
 
     let switch_view = ev => {
         ev.preventDefault();

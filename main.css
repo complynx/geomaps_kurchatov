@@ -117,7 +117,7 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .map-gui>.buttons a{
     text-decoration: none;
 }
-.layers-list{
+.map-layers .layers-list{
     border-top: 1px solid #fff;
 }
 .layer-list-card{
@@ -129,7 +129,7 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 }
 .layer-list-card>.drag-handle{
     font-size: 1.2em;
-    cursor: pointer;
+    cursor: s-resize;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -137,7 +137,7 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .layer-list-card>.drag-handle:hover{
     color: var(--map-gui-fg-hover);
 }
-.layers-list>.drag-placeholder{
+.map-layers .layers-list>.drag-placeholder{
     height:2em;
     border-bottom: 1px solid #fff;
 }
@@ -249,12 +249,17 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .layer-list-card .buttons{
     float: right;
 }
+.layers-buttons>*,
 .layer-list-card .buttons>*{
     cursor: pointer;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
 }
+.layers-buttons>*:hover,
 .layer-list-card .buttons>*:hover{
     color:var(--map-gui-fg-hover);
+}
+.layers-buttons>*{
+    display: inline-block;
 }
