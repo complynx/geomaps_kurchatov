@@ -1,3 +1,8 @@
+/**
+Created by Complynx on 22.03.2019,
+http://complynx.net
+ <complynx@yandex.ru> Daniel Drizhuk
+*/
 let html = `<div class="map-gui">
     <div class="buttons">
         <a class="no-gl mfi" href="./index_gl.html" title="Открыть в виде 3D глобуса">&#xf018;</a>
