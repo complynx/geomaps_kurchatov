@@ -20,7 +20,7 @@ let html = `<div class="map-gui">
     
     <div class="layers-search hidden">
         <input type="text" name="search" placeholder="Поиск..."><span class="close mfi">&#xe80d;</span>
-        <div class="layers-list"></div>
+        <div class="layers-categories"></div>
     </div>
 </div>`;
 let layer_list_card_tpl=`
@@ -33,12 +33,28 @@ let layer_list_card_tpl=`
         <div class="opacity"><span class="mfi">&#xe800;</span><input type="range" min="0" max="1" step="0.001" name="opacity"></div>
     </div>
 </div>`;
+let layer_category_tpl=`
+<div class="layer-category" id="{id}">
+    <span class="title">{title}</span>
+    <div class="subcategories"></div>
+</div>`;
+let layer_subcategory_tpl=`
+<div class="layer-subcategory" id="{id}">
+    <span class="title">{title}</span>
+    <div class="layers-list"></div>
+</div>`;
+let layer_selection_card_tpl=`
+<div class="layer-selection-card" id="{id}">
+    <span class="name">{title}</span>
+    <span class="provider">{provider}</span>
+    <span class="description">{description}</span>
+</div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
 import {XConsole} from "/modules/console_enhancer.js";
 import {vformat} from "/modules/format.js";
 import {load_css, insertAt, unique_id} from "/modules/dom_utils.js";
-import {basename, dirname} from "/modules/utils.js";
+import {basename, dirname, fetch_json} from "/modules/utils.js";
 
 load_css('./icons/css/mapfont.css');
 load_css("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300");
@@ -184,16 +200,55 @@ function layers_search() {
     $('.layers-search', GUI).classList.remove('hidden');
 }
 
+function populate_selection_list(){
+    let make_layers=(subcat, container)=>{
+        for(let i of subcat.data){
+            let layer = layers.DB.layers[i];
+            let id = unique_id("lsc");
+            let el = $C(vformat(layer_subcategory_tpl,Object.assign({
+                id: id
+            }, layer))).firstElementChild;
+            container.appendChild(el);
+        }
+    };
+    let lc = $('.layers-search .layers-categories', GUI);
+    for(let i in layers.DB.categories){
+        let cat = layers.DB.categories[i];
+        let id = unique_id('category');
+        let el = $C(vformat(layer_category_tpl,{
+            title: i,
+            id: id
+        })).firstElementChild;
+        lc.appendChild(el);
+        let cc = $('.subcategories', el);
+        if(cat.subcategories)
+            for(let j in cat.subcategories){
+                let sub = cat.subcategories[j];
+                let sid = unique_id("subcategory");
+                let s_el = $C(vformat(layer_subcategory_tpl,{
+                    title: j,
+                    id: sid
+                })).firstElementChild;
+                cc.appendChild(s_el);
+                let sc = $('.layers-list', el);
+                make_layers(sub, sc);
+            }
+        else make_layers(cat, cc);
+    }
+}
+
 function getLayers(){
-    return fetch("./layers.json")
-        .then(resp=>resp.json())
+    return fetch_json("./layers.json")
         .then(layers_db=>{
             layers.DB = layers_db;
             for(let i in layers_db.layers){
                 layers_db.layers[i].name = i;
             }
+
+            populate_selection_list();
+            throw new Error("test");
         })
-        .catch(console.error.bind(console));
+        .catch(console.error);
 }
 
 export function init(_map, _L){

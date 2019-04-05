@@ -65,7 +65,7 @@
         "Основы": {
           "data": [ "u_osm", "u_dark", "u_topo", "u_sat_mapped", "u_sat"]
         },
-        "Слои": {
+        "Маркировка": {
           "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
         }
       }
