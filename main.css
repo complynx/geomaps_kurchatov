@@ -263,3 +263,43 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .layers-buttons>*{
     display: inline-block;
 }
+
+.layers-search {
+    z-index:450;
+    --width:70em;
+    --height:95vh;
+    background: #ccc;
+    color: #333;
+    left:calc(50vw - var(--width)/2);
+    width:var(--width);
+    max-height: var(--height);
+    top: calc(50vh - var(--height)/2);
+    border-radius: .2em;
+    padding: .3em .5em;
+}
+.layers-search>input{
+    width: calc(100% - 1.2em);
+    border: none;
+    font-size: 1.2em;
+    border-bottom: 2px solid #333;
+    background:transparent;
+}
+.layers-search>input:hover{
+    border-bottom-color: #3af;
+}
+.layers-search>input:focus{
+    border-bottom-color: #3a3;
+}
+.layers-search>.close{
+    width: 1.5em;
+    margin-right: -1em;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.layers-search>.close:hover{
+    color:#f83;
+}

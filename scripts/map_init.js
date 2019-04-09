@@ -199,13 +199,16 @@ class Layer{
 function layers_search() {
     $('.layers-search', GUI).classList.remove('hidden');
 }
+function layers_search_close() {
+    $('.layers-search', GUI).classList.add('hidden');
+}
 
 function populate_selection_list(){
     let make_layers=(subcat, container)=>{
         for(let i of subcat.data){
             let layer = layers.DB.layers[i];
             let id = unique_id("lsc");
-            let el = $C(vformat(layer_subcategory_tpl,Object.assign({
+            let el = $C(vformat(layer_selection_card_tpl, Object.assign({
                 id: id
             }, layer))).firstElementChild;
             container.appendChild(el);
@@ -230,7 +233,7 @@ function populate_selection_list(){
                     id: sid
                 })).firstElementChild;
                 cc.appendChild(s_el);
-                let sc = $('.layers-list', el);
+                let sc = $('.layers-list', s_el);
                 make_layers(sub, sc);
             }
         else make_layers(cat, cc);
@@ -271,6 +274,7 @@ export function init(_map, _L){
     layers_btn.addEventListener('click', ()=>{
         layers_container.classList.toggle('editor-hidden');
     });
+    $('.layers-search .close', GUI).addEventListener('click', layers_search_close);
 
 
     $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search);
