@@ -167,6 +167,12 @@
       ]
     },
     {
+      "uid": "e4dde1992f787163e2e2b534b8c8067d",
+      "css": "angle-down",
+      "code": 61703,
+      "src": "fontawesome"
+    },
+    {
       "uid": "c71129da4e8ba026bb5f77ccd195a08c",
       "css": "transparency-thin",
       "code": 59405,

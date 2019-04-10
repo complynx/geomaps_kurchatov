@@ -46,8 +46,8 @@ let layer_subcategory_tpl=`
 let layer_selection_card_tpl=`
 <div class="layer-selection-card" id="{id}">
     <span class="name">{title}</span>
-    <span class="provider">{provider}</span>
-    <span class="description">{description}</span>
+    {provider!typeof(string)}<span class="provider">{provider}</span>{==}
+    {description!typeof(string)}<span class="description">{description}</span>{==}
 </div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
@@ -196,7 +196,7 @@ class Layer{
     }
 }
 
-function layers_search() {
+function layers_search_open() {
     $('.layers-search', GUI).classList.remove('hidden');
 }
 function layers_search_close() {
@@ -240,16 +240,83 @@ function populate_selection_list(){
     }
 }
 
+function layer_keyword(layer, keyword){
+    let branch = layers.keymap;
+    for(let c of keyword.split("")){
+        if(!branch[c]) branch[c] = {};
+        branch = branch[c];
+    }
+    if(!branch.layers) branch.layers = [];
+    branch.layers.push(layer.name);
+}
+
+let keyword_re = /(Ё|Й|ё|й|[\wа-яёА-ЯЁ])+/gmiu;
+function layer_keywords(layer){
+    if(!layers.keymap) layers.keymap = {};
+
+    let exec_on = (str)=> {
+        if(!str) return;
+        str = str.toLowerCase();
+        let keyword;
+        while ((keyword = keyword_re.exec(str)) !== null) {
+            layer_keyword(layer, keyword[0]);
+        }
+    };
+    exec_on(layer.keywords);
+    exec_on(layer.title);
+    exec_on(layer.tiles);
+    exec_on(layer.provider);
+    exec_on(layer.description);
+}
+
+function flatten_searcher(branch){
+    let ret = [];
+    for(let i in branch){
+        if(i === "layers")
+            ret = ret.concat(branch.layers);
+        else
+            ret = ret.concat(flatten_searcher(branch[i]));
+    }
+    return ret;
+}
+
+function layers_search_keyword(keyword) {
+    let branch = layers.keymap;
+    for(let c of keyword.split("")){
+        if(!branch[c]) return [];
+        branch = branch[c];
+    }
+    return flatten_searcher(branch);
+}
+function layers_search(search) {
+    let keyword;
+    let layers_hits = {};
+    let max = 0;
+    search = search.toLowerCase();
+    while ((keyword = keyword_re.exec(search)) !== null) {
+        let res = layers_search_keyword(keyword[0]);
+        for(let name of res){
+            ++layers_hits[name];
+            max = Math.max(max, layers_hits);
+        }
+    }
+    for(let i in layers_hits){
+        if(layers_hits[i] < max-2)
+            delete layers_hits[i];
+    }
+    return Object.keys(layers_hits).sort((a,b) => layers_hits[a]-layers_hits[b]);
+}
+
 function getLayers(){
     return fetch_json("./layers.json")
         .then(layers_db=>{
             layers.DB = layers_db;
             for(let i in layers_db.layers){
                 layers_db.layers[i].name = i;
+                layer_keywords(layers_db.layers[i]);
             }
 
             populate_selection_list();
-            throw new Error("test");
         })
         .catch(console.error);
 }
@@ -277,7 +344,7 @@ export function init(_map, _L){
     $('.layers-search .close', GUI).addEventListener('click', layers_search_close);
 
 
-    $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search);
+    $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search_open);
 
     let switch_view = ev => {
         ev.preventDefault();

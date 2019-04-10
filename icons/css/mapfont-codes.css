@@ -19,6 +19,7 @@
 .mfi-menu:before { content: '\e811'; } /* '' */
 .mfi-drag:before { content: '\e812'; } /* '' */
 .mfi-globe:before { content: '\f018'; } /* '' */
+.mfi-angle-down:before { content: '\f107'; } /* '' */
 .mfi-circle:before { content: '\f111'; } /* '' */
 .mfi-circle-thin:before { content: '\f1db'; } /* '' */
 .mfi-sliders:before { content: '\f1de'; } /* '' */

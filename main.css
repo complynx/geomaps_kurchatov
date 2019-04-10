@@ -303,3 +303,34 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .layers-search>.close:hover{
     color:#f83;
 }
+.layers-search>.layers-categories>.layer-category .subcategories>.layer-subcategory:before{
+    content: "";
+    --size: 1.2em;
+    width: var(--size);
+    height: var(--size);
+    line-height: var(--size);
+    display: inline-block;
+    transform: rotate(-90deg);
+    transition: .5s;
+    text-align: center;
+    font-family: "mapfont";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.layers-search>.layers-categories>.layer-category .subcategories>.layer-subcategory .layers-list{
+    display: none;
+}
+.layers-search>.layers-categories>.layer-category .subcategories>.layer-subcategory:nth-of-type(1)~*{
+    overflow-y: hidden;
+    height: 0px;
+}
+.layer-selection-card .provider{
+    font-size: 0.65em;
+    color: #777;
+    display: block;
+}

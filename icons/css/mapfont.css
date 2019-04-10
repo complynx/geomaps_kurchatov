@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'mapfont';
-  src: url('../font/mapfont.eot?39555805');
-  src: url('../font/mapfont.eot?39555805#iefix') format('embedded-opentype'),
-       url('../font/mapfont.woff2?39555805') format('woff2'),
-       url('../font/mapfont.woff?39555805') format('woff'),
-       url('../font/mapfont.ttf?39555805') format('truetype'),
-       url('../font/mapfont.svg?39555805#mapfont') format('svg');
+  src: url('../font/mapfont.eot?81840377');
+  src: url('../font/mapfont.eot?81840377#iefix') format('embedded-opentype'),
+       url('../font/mapfont.woff2?81840377') format('woff2'),
+       url('../font/mapfont.woff?81840377') format('woff'),
+       url('../font/mapfont.ttf?81840377') format('truetype'),
+       url('../font/mapfont.svg?81840377#mapfont') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'mapfont';
-    src: url('../font/mapfont.svg?39555805#mapfont') format('svg');
+    src: url('../font/mapfont.svg?81840377#mapfont') format('svg');
   }
 }
 */
@@ -75,6 +75,7 @@
 .mfi-menu:before { content: '\e811'; } /* '' */
 .mfi-drag:before { content: '\e812'; } /* '' */
 .mfi-globe:before { content: '\f018'; } /* '' */
+.mfi-angle-down:before { content: '\f107'; } /* '' */
 .mfi-circle:before { content: '\f111'; } /* '' */
 .mfi-circle-thin:before { content: '\f1db'; } /* '' */
 .mfi-sliders:before { content: '\f1de'; } /* '' */
