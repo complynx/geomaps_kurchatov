@@ -57,6 +57,33 @@
       "zoom": [1, 22],
       "tiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
       "keywords": "стандартная standard signs надписи карта osm openstreetmap map база base pad"
+    },
+    "MODIS_Terra_CorrectedReflectance_TrueColor": {
+      "title": "Terra / MODIS Видимый диапазон, скорректированная",
+      "tiles": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/GoogleMapsCompatible_Level{maxNativeZoom}/{z}/{y}/{x}.jpg",
+      "zoom": [1, 9],
+      "time": {"from":"2000-02-24"},
+      "bounds": [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+      "provider": "Terra / MODIS — NASA EOSDIS",
+      "keywords": "modis eosdis nasa terra corrected true наса модис земля видимый скорректированная "
+    },
+    "MODIS_Aqua_CorrectedReflectance_TrueColor": {
+      "title": "Aqua / MODIS Видимый диапазон, скорректированная",
+      "tiles": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Aqua_CorrectedReflectance_TrueColor/default/{time}/GoogleMapsCompatible_Level{maxNativeZoom}/{z}/{y}/{x}.jpg",
+      "zoom": [1, 9],
+      "time": {"from":"2002-07-03"},
+      "bounds": [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+      "provider": "Aqua / MODIS — NASA EOSDIS",
+      "keywords": "modis eosdis nasa Aqua corrected true наса модис вода видимый скорректированная "
+    },
+    "VIIRS_SNPP_CorrectedReflectance_TrueColor": {
+      "title": "VIIRS Видимый диапазон, скорректированная",
+      "tiles": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/{time}/GoogleMapsCompatible_Level{maxNativeZoom}/{z}/{y}/{x}.jpg",
+      "zoom": [1, 9],
+      "time": {"from":"2015-11-24"},
+      "bounds": [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+      "provider": "Suomi NPP / VIIRS — NASA EOSDIS",
+      "keywords": "snpp suomi npp vriis eosdis nasa corrected true наса вриис суоми нпп видимый скорректированная "
     }
   },
   "categories": {
@@ -69,6 +96,63 @@
           "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
         }
       }
+    },
+    "NASA EOSDIS": {
+      "subcategories": {
+        "Базовые карты": {
+          "data": [
+            "MODIS_Terra_CorrectedReflectance_TrueColor",
+            "MODIS_Aqua_CorrectedReflectance_TrueColor",
+            "VIIRS_SNPP_CorrectedReflectance_TrueColor"
+          ]
+        }
+      }
+    },
+    "Тестовая категория много подкатегорий": {
+      "subcategories": {
+        "sc1": {
+          "data": [ "u_osm", "u_dark", "u_topo", "u_sat_mapped", "u_sat"]
+        },
+        "sc2": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "подкатегория с кучей карт": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads", "u_osm", "u_dark", "u_topo", "u_sat_mapped",
+            "u_sat", "MODIS_Terra_CorrectedReflectance_TrueColor",
+            "MODIS_Aqua_CorrectedReflectance_TrueColor",
+            "VIIRS_SNPP_CorrectedReflectance_TrueColor"]
+        },
+        "sc4": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc5": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc6": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc7": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc8": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc9": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        },
+        "sc10": {
+          "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+        }
+      }
+    },
+    "Тестовая категория бп": {
+      "data": ["u_labels", "u_coastlines", "u_coastlines_roads"]
+    },
+    "Тестовая категория бп с кучей карт": {
+      "data": ["u_labels", "u_coastlines", "u_coastlines_roads", "u_osm", "u_dark", "u_topo", "u_sat_mapped",
+        "u_sat", "MODIS_Terra_CorrectedReflectance_TrueColor",
+        "MODIS_Aqua_CorrectedReflectance_TrueColor",
+        "VIIRS_SNPP_CorrectedReflectance_TrueColor"]
     }
   }
 }

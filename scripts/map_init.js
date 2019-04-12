@@ -4,6 +4,7 @@ http://complynx.net
  <complynx@yandex.ru> Daniel Drizhuk
 */
 
+
 let html = `<div class="map-gui">
     <div class="buttons">
         <a class="no-gl mfi" href="./index_gl.html" title="Открыть в виде 3D глобуса">&#xf018;</a>
@@ -19,7 +20,7 @@ let html = `<div class="map-gui">
     </div>
     
     <div class="layers-search hidden">
-        <input type="text" name="search" placeholder="Поиск..."><span class="close mfi">&#xe80d;</span>
+        <span class="back mfi"></span><input type="text" name="search" placeholder="Поиск..."><span class="close mfi">&#xe80d;</span>
         <div class="layers-categories"></div>
     </div>
 </div>`;
@@ -49,12 +50,16 @@ let layer_selection_card_tpl=`
     {provider!typeof(string)}<span class="provider">{provider}</span>{==}
     {description!typeof(string)}<span class="description">{description}</span>{==}
 </div>`;
+let layer_selection_ellipsis=`
+<div class="layer-selection-ellipsis">…</div>`;
 
 import {createFragment as $C} from "/modules/create_dom.js";
 import {XConsole} from "/modules/console_enhancer.js";
 import {vformat} from "/modules/format.js";
 import {load_css, insertAt, unique_id} from "/modules/dom_utils.js";
 import {basename, dirname, fetch_json} from "/modules/utils.js";
+import moment from "/modules/moment/moment-with-locales.js";
+import {stopper, mouseTracker} from "/modules/event_utils.js";
 
 load_css('./icons/css/mapfont.css');
 load_css("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300");
@@ -67,20 +72,22 @@ let $R=(e)=>e && e.parentNode && e.parentNode.removeChild(e);
 let GUI, layers_editor, L, map, layers={};
 let placeholder = $('div', $C('<div class="drag-placeholder">&nbsp;</div>'));
 
-function create_map_layer(layer_info){
-    let layer;
-    if(layer_info.tiles){
-        let opt = {
-            minNativeZoom: layer_info.zoom[0],
-            maxNativeZoom: layer_info.zoom[1]
-        };
-        if(layer_info.bounds) opt.bounds = layer_info.bounds;
-        layer = L.tileLayer(layer_info.tiles, opt);
-    }
-    return layer;
-}
+
 
 class Layer{
+    create_map_layer(layer_info){
+        let layer;
+        if(layer_info.tiles){
+            let opt = {
+                minNativeZoom: layer_info.zoom[0],
+                maxNativeZoom: layer_info.zoom[1],
+                time: this.get_time().format('Y-MM-DD')
+            };
+            if(layer_info.bounds) opt.bounds = layer_info.bounds;
+            layer = L.tileLayer(layer_info.tiles, opt);
+        }
+        return layer;
+    }
     constructor(layer_name, opt){
         if(!opt) opt={};
         this.id = unique_id('layer');
@@ -91,8 +98,20 @@ class Layer{
         this.el = $('div', html);
         $('.opacity input', this.el).addEventListener('input', ev => this.setOpacity(ev.target.value));
         $('.buttons .del', this.el).addEventListener('click', () => this.remove());
-        $('.drag-handle', this.el).addEventListener('mousedown', (ev) => this.dragstart(ev));
+        $('.drag-handle', this.el).addEventListener('mousedown', mouseTracker(
+                this.drag_move.bind(this),
+                this.drag_start.bind(this),
+                this.drag_end.bind(this),
+            )
+        );
         let layers_container = $('.map-layers .layers-list', GUI);
+        if(this.options.time){
+            this.timeStart = moment(this.options.time.from).utc();
+            this.timeEnd = moment(this.options.time.to).utc();
+        }else{
+            this.timeStart = moment.utc();
+            this.timeEnd = moment.utc();
+        }
 
         this.options.opacity = opt.opacity || this.info.opacity;
 
@@ -102,51 +121,45 @@ class Layer{
         this.create_map_level();
         if(opt.level) this.change_level(opt.level);
     }
-    dragstart(ev){
+    drag_move(ev){
+        let rect = placeholder.getBoundingClientRect();
+        if(rect.top > ev.clientY){
+            placeholder.parentNode.insertBefore(placeholder, placeholder.previousSibling);
+        }
+        if(rect.bottom < ev.clientY){
+            if(placeholder.nextSibling && placeholder.nextSibling.nextSibling)
+                placeholder.parentNode.insertBefore(placeholder, placeholder.nextSibling.nextSibling);
+            else placeholder.parentNode.appendChild(placeholder);
+        }
+
+        this.el.style.top = (ev.clientY - this.el.clientHeight/2) + "px";
+        this.el.style.left = (ev.clientX - this.el.clientWidth/2) + "px";
+    }
+    drag_start(ev){
         this.el.classList.add('dragging');
         this.el.style.width = this.el.clientWidth + 'px';
         this.el.parentNode.insertBefore(placeholder, this.el);
         placeholder.style.height = this.el.clientHeight + 'px';
+    }
+    drag_end(ev){
+        this.el.style.top = '';
+        this.el.style.left = '';
+        this.el.style.width = '';
+        placeholder.style.height = '';
 
-        let move_reg = (ev)=>{
-            ev.preventDefault();
-            ev.stopPropagation();
-            let rect = placeholder.getBoundingClientRect();
-            if(rect.top > ev.clientY){
-                placeholder.parentNode.insertBefore(placeholder, placeholder.previousSibling);
-            }
-            if(rect.bottom < ev.clientY){
-                if(placeholder.nextSibling && placeholder.nextSibling.nextSibling)
-                    placeholder.parentNode.insertBefore(placeholder, placeholder.nextSibling.nextSibling);
-                else placeholder.parentNode.appendChild(placeholder);
-            }
-
-            this.el.style.top = (ev.clientY - this.el.clientHeight/2) + "px";
-            this.el.style.left = (ev.clientX - this.el.clientWidth/2) + "px";
-        };
-        let finish_reg = (ev)=>{
-            move_reg(ev);
-            this.el.style.top = '';
-            this.el.style.left = '';
-            this.el.style.width = '';
-            placeholder.style.height = '';
-
-            window.removeEventListener('mousemove', move_reg, {capture: true});
-            window.removeEventListener('mouseup', finish_reg, {capture: true});
-            this.el.classList.remove('dragging');
-            placeholder.parentNode.insertBefore(this.el, placeholder);
-            $R(placeholder);
-            Layer.update_z_indexes();
-        };
-
-        window.addEventListener('mousemove', move_reg, {capture: true});
-        window.addEventListener('mouseup', finish_reg, {capture: true});
-
-        move_reg(ev);
+        this.el.classList.remove('dragging');
+        placeholder.parentNode.insertBefore(this.el, placeholder);
+        $R(placeholder);
+        Layer.update_z_indexes();
+    }
+    get_time(){
+        return this.timeEnd.isBefore(layers.time) ? this.timeEnd :
+            this.timeStart.isAfter(layers.time) ? this.timeStart :
+                layers.time;
     }
     create_map_level(){
         if(this.map) this.map.removeFrom(map);
-        this.map = create_map_layer(this.info);
+        this.map = this.create_map_layer(this.info);
         this.map.addTo(map);
         this.setOpacity(this.options.opacity);
         if(this.map.setZIndex){
@@ -197,21 +210,45 @@ class Layer{
 }
 
 function layers_search_open() {
-    $('.layers-search', GUI).classList.remove('hidden');
+    let s = $('.layers-search', GUI);
+    s.classList.remove('hidden');
+
+    s.classList.remove('cat-selected');
+    for(let i of $A(".layer-category.selected", s))
+        i.classList.remove('selected');
+
+    for(let i of $A(".layer-subcategory.opened", s))
+        i.classList.remove("opened");
 }
 function layers_search_close() {
     $('.layers-search', GUI).classList.add('hidden');
 }
 
+function layers_select_open_subcategory(ev) {
+    if(ev.target.closest(".layer-selection-card")) return;
+    ev.currentTarget.classList.toggle("opened");
+}
+
 function populate_selection_list(){
+    let ellipsis_pos = 6;
     let make_layers=(subcat, container)=>{
+        let ellipsis_countdown = ellipsis_pos;
         for(let i of subcat.data){
+            if(--ellipsis_countdown === 0) container.appendChild($C(layer_selection_ellipsis));
             let layer = layers.DB.layers[i];
             let id = unique_id("lsc");
             let el = $C(vformat(layer_selection_card_tpl, Object.assign({
                 id: id
             }, layer))).firstElementChild;
             container.appendChild(el);
+
+            el.addEventListener("click", ev=>{
+                if($('.layers-search.cat-selected', GUI)){
+                    new Layer(layer.name);
+                    layers_search_back(ev);
+                    layers_search_close();
+                }
+            });
         }
     };
     let lc = $('.layers-search .layers-categories', GUI);
@@ -224,24 +261,29 @@ function populate_selection_list(){
         })).firstElementChild;
         lc.appendChild(el);
         let cc = $('.subcategories', el);
-        if(cat.subcategories)
-            for(let j in cat.subcategories){
+        if(cat.subcategories) {
+            let ellipsis_countdown = ellipsis_pos;
+            for (let j in cat.subcategories) {
+                if(--ellipsis_countdown === 0) cc.appendChild($C(layer_selection_ellipsis));
+
                 let sub = cat.subcategories[j];
                 let sid = unique_id("subcategory");
-                let s_el = $C(vformat(layer_subcategory_tpl,{
+                let s_el = $C(vformat(layer_subcategory_tpl, {
                     title: j,
                     id: sid
                 })).firstElementChild;
+                s_el.addEventListener("click", layers_select_open_subcategory);
                 cc.appendChild(s_el);
                 let sc = $('.layers-list', s_el);
                 make_layers(sub, sc);
             }
-        else make_layers(cat, cc);
+        } else make_layers(cat, cc);
     }
 }
 
 function layer_keyword(layer, keyword){
     let branch = layers.keymap;
+    if(keyword.length === 0) return;
     for(let c of keyword.split("")){
         if(!branch[c]) branch[c] = {};
         branch = branch[c];
@@ -321,6 +363,23 @@ function getLayers(){
         .catch(console.error);
 }
 
+function layers_search_open_category(ev){
+    let cat = ev.target.closest('.layer-category');
+    cat.classList.add('selected');
+    cat.closest('.layers-search').classList.add('cat-selected');
+}
+
+function layers_search_back(ev){
+    let s = ev.target.closest('.layers-search');
+    s.classList.remove('cat-selected');
+    for(let i of $A(".layer-category.selected", s))
+        i.classList.remove('selected');
+
+    for(let i of $A(".layer-subcategory.opened", s))
+        i.classList.remove("opened");
+
+}
+
 export function init(_map, _L){
     L = _L;
     map = _map;
@@ -332,6 +391,7 @@ export function init(_map, _L){
         new Layer("u_coastlines");
         new Layer("u_labels");
     });
+    layers.time = moment();
 
     document.body.appendChild($C(html));
     GUI = $('.map-gui');
@@ -345,12 +405,13 @@ export function init(_map, _L){
 
 
     $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search_open);
+    $('.layers-search>.layers-categories', GUI).addEventListener('click', layers_search_open_category);
+    $('.layers-search>.back', GUI).addEventListener('click', layers_search_back);
 
-    let switch_view = ev => {
-        ev.preventDefault();
+    let switch_view = stopper(ev => {
         location.replace(location.origin + dirname(location.pathname) + "/" + basename(ev.target.href)
             + (location.search || "") + (location.hash || ""));
-    };
+    });
     $(".buttons .no-gl").addEventListener("click", switch_view);
     $(".buttons .w-gl").addEventListener("click", switch_view);
 }
