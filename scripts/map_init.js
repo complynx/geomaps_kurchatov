@@ -23,6 +23,24 @@ let html = `<div class="map-gui">
         <span class="back mfi"></span><input type="text" name="search" placeholder="Поиск..."><span class="close mfi">&#xe80d;</span>
         <div class="layers-categories"></div>
     </div>
+    
+    <div class="time-machine">
+        <div class="year">
+            <span class="up mfi"></span>
+            <input type="number">
+            <span class="down mfi"></span>
+        </div>
+        <div class="month">
+            <span class="up mfi"></span>
+            <input type="text">
+            <span class="down mfi"></span>
+        </div>
+        <div class="day">
+            <span class="up mfi"></span>
+            <input type="number">
+            <span class="down mfi"></span>
+        </div>
+    </div>
 </div>`;
 let layer_list_card_tpl=`
 <div class="layer-list-card" id="{id}">
@@ -60,6 +78,8 @@ import {load_css, insertAt, unique_id} from "/modules/dom_utils.js";
 import {basename, dirname, fetch_json} from "/modules/utils.js";
 import moment from "/modules/moment/moment-with-locales.js";
 import {stopper, mouseTracker} from "/modules/event_utils.js";
+
+moment.locale('ru');
 
 load_css('./icons/css/mapfont.css');
 load_css("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300");
@@ -105,9 +125,9 @@ class Layer{
             )
         );
         let layers_container = $('.map-layers .layers-list', GUI);
-        if(this.options.time){
-            this.timeStart = moment(this.options.time.from).utc();
-            this.timeEnd = moment(this.options.time.to).utc();
+        if(this.info.time){
+            this.timeStart = moment(this.info.time.from).utc();
+            this.timeEnd = moment(this.info.time.to).utc();
         }else{
             this.timeStart = moment.utc();
             this.timeEnd = moment.utc();
@@ -181,12 +201,15 @@ class Layer{
             Layer.update_z_indexes();
         }
     }
-    static update_z_indexes(){
+    static *Iterator(){
         let els = Array.from($('.map-layers .layers-list', GUI).children);
-        for(let i=els.length - 1; i>=0; --i){
-            let el = els[i];
-            let l = layers[el.id];
-            if(l.map.setZIndex) l.map.setZIndex(els.length - i);
+        for(let i=els.length - 1; i>=0; --i)
+            yield layers[els[i].id];
+    }
+    static update_z_indexes(){
+        let z_index=0;
+        for(let l of layers){
+            if(l.map.setZIndex) l.map.setZIndex(++z_index);
             else l.create_map_level();
         }
     }
@@ -208,6 +231,7 @@ class Layer{
         this.options.opacity = opacity;
     }
 }
+layers[Symbol.iterator] = Layer.Iterator;
 
 function layers_search_open() {
     let s = $('.layers-search', GUI);
@@ -279,6 +303,18 @@ function populate_selection_list(){
             }
         } else make_layers(cat, cc);
     }
+}
+
+function time_change(new_time, update_layers=true, test=false) {
+    if(test && layers.time.isSame(new_time, "day")) return;
+    console.log(new_time.format("YYYY MMM DD"));
+
+    let t = layers.time = moment(new_time);
+    $('.time-machine .year input', GUI).value = t.format("Y");
+    $('.time-machine .month input', GUI).value = t.format("MMM").substr(0,3);
+    $('.time-machine .day input', GUI).value = t.format("DD");
+
+    if(update_layers) for(let l of layers) l.create_map_level();
 }
 
 function layer_keyword(layer, keyword){
@@ -403,10 +439,38 @@ export function init(_map, _L){
     });
     $('.layers-search .close', GUI).addEventListener('click', layers_search_close);
 
+    time_change(layers.time);
 
     $('.layers-buttons .add-layer', GUI).addEventListener('click', layers_search_open);
     $('.layers-search>.layers-categories', GUI).addEventListener('click', layers_search_open_category);
     $('.layers-search>.back', GUI).addEventListener('click', layers_search_back);
+
+    $('.time-machine .year .up', GUI).addEventListener('click', ()=>time_change(layers.time.add(1, 'year')));
+    $('.time-machine .year .down', GUI).addEventListener('click', ()=>time_change(layers.time.subtract(1, 'year')));
+    $('.time-machine .month .up', GUI).addEventListener('click', ()=>time_change(layers.time.add(1, 'month')));
+    $('.time-machine .month .down', GUI).addEventListener('click', ()=>time_change(layers.time.subtract(1, 'month')));
+    $('.time-machine .day .up', GUI).addEventListener('click', ()=>time_change(layers.time.add(1, 'day')));
+    $('.time-machine .day .down', GUI).addEventListener('click', ()=>time_change(layers.time.subtract(1, 'day')));
+
+    let changer=(element, parser)=>{
+        let on_change=(ev)=>{
+            if(ev.type === 'keypress' && ev.key !== 'Enter') return;
+            ev.stopPropagation();
+            ev.preventDefault();
+            parser(element.value);
+        };
+        element.addEventListener('blur', on_change);
+        element.addEventListener('keypress', on_change, true);
+    };
+    changer($('.time-machine .year input', GUI), val=>time_change(layers.time.year(parseInt(val))));
+    changer($('.time-machine .day input', GUI), val=>time_change(layers.time.day(parseInt(val))));
+    let re=/^[a-z]+$/i;
+    changer($('.time-machine .month input', GUI), val=>{
+        let m = moment(val, "MMM", val.match(re) ? "en" : 'ru');
+        time_change(layers.time.month(m.month()));
+    });
+
+
 
     let switch_view = stopper(ev => {
         location.replace(location.origin + dirname(location.pathname) + "/" + basename(ev.target.href)

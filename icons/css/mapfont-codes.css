@@ -20,6 +20,7 @@
 .mfi-drag:before { content: '\e812'; } /* '' */
 .mfi-globe:before { content: '\f018'; } /* '' */
 .mfi-angle-left:before { content: '\f104'; } /* '' */
+.mfi-angle-up:before { content: '\f106'; } /* '' */
 .mfi-angle-down:before { content: '\f107'; } /* '' */
 .mfi-circle:before { content: '\f111'; } /* '' */
 .mfi-circle-thin:before { content: '\f1db'; } /* '' */

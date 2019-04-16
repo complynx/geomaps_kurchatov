@@ -430,3 +430,61 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
 .layers-search.cat-selected>input {
     width: calc(100% - 2.25em);
 }
+
+
+.time-machine{
+    bottom: .5em;
+    left:.5em;
+    padding:.4em .6em;
+    border-radius: .2em;
+    background: var(--map-gui-bg);
+    color: var(--map-gui-fg);
+}
+.time-machine>div{
+    float: left;
+    font-size:1.5em;
+    margin-left: .1em;
+}
+.time-machine>div:first-child{
+    margin-left: 0;
+}
+.time-machine .up,
+.time-machine .down{
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    line-height: .4em;
+    height: .5em;
+    width: 100%;
+    font-size:1.5em;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.time-machine input{
+    appearance: textfield;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    font-size:1em;
+    padding: 0;
+    height: 1em;
+    background: transparent;
+    color:var(--map-gui-fg);
+    text-align: center;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.time-machine .down{
+    margin-top: .05em;
+}
+.time-machine .year{
+    width: 2.5em;
+}
+.time-machine .month{
+    width: 3em;
+}
+.time-machine .day{
+    width: 1.3em;
+}
