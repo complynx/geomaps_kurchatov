@@ -13,6 +13,8 @@ http://complynx.net
     <script type="module">
         import {init} from "./scripts/map_init.js";
         import {dirname} from "/modules/utils.js";
+        import {XConsole} from "/modules/console_enhancer.js";
+        let console=new XConsole("Map Loader");
 
         window.addEventListener("load", ()=>{
             try {
@@ -22,6 +24,7 @@ http://complynx.net
                 });
                 init(map, WE);
             }catch (e) {
+                console.error(e);
                 let m = document.querySelector("#map");
                 m.classList.add('gl-fail');
                 m.innerHTML=`

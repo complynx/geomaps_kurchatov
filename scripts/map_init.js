@@ -452,6 +452,9 @@ export function init(_map, _L){
     $('.time-machine .day .up', GUI).addEventListener('click', ()=>time_change(layers.time.add(1, 'day')));
     $('.time-machine .day .down', GUI).addEventListener('click', ()=>time_change(layers.time.subtract(1, 'day')));
 
+    if(L.control)
+        L.control.scale({position:"bottomright"}).addTo(map);
+
     let changer=(element, parser)=>{
         let on_change=(ev)=>{
             if(ev.type === 'keypress' && ev.key !== 'Enter') return;
