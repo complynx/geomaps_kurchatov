@@ -478,6 +478,12 @@ label.dropdown>input[type=checkbox]:not(:checked)+.content{
     text-transform: uppercase;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+.time-machine input[type=number]::-webkit-inner-spin-button {
+    width: 0;
+    height: 0;
+    -webkit-appearance: none;
+    margin: 0;
+}
 .time-machine .down{
     margin-top: .05em;
 }
