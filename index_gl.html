@@ -11,6 +11,14 @@ http://complynx.net
     <title>Спутники Курчатовского Института 3D</title>
     <link rel="stylesheet" href="./main.css"/>
     <script type="module">
+        /**
+         * This is starting script. It waits for the map engine to load and starts it calling the init function
+         * The init accepts map engine as one parameter and a prepared map as another.
+         * All the other functionality is in the map_init
+         *
+         * One more thing this particular script is doing — checking whether GL context is ready. If not, it fails
+         * back to planar maps respecting all the passed-in queries.
+         */
         import {init} from "./scripts/map_init.js";
         import {dirname} from "/modules/utils.js";
         import {XConsole} from "/modules/console_enhancer.js";
@@ -27,13 +35,14 @@ http://complynx.net
                 console.error(e);
                 let m = document.querySelector("#map");
                 m.classList.add('gl-fail');
+                let loc = location.origin + dirname(location.pathname) + '/index.html'
+                    + (location.search || "") + (location.hash || "");
                 m.innerHTML=`
-                <a href="./index.html">Failed to initialize WebGL, switch to 2D view.<br>
+                <a href="${loc}">Failed to initialize WebGL, switch to 2D view.<br>
                 Ошибка инициализации WebGL, переключить на режим 2D.</a>
                 `;
                 setTimeout(()=>{
-                    location.replace(location.origin + dirname(location.pathname) + '/index.html'
-                        + (location.search || "") + (location.hash || ""));
+                    location.replace(loc);
                 }, 2000);
             }
         }, {once:true});

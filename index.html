@@ -16,6 +16,11 @@ http://complynx.net
     <title>Спутники Курчатовского Института</title>
     <link rel="stylesheet" href="./main.css"/>
     <script type="module">
+        /**
+         * This is starting script. It waits for the map engine to load and starts it calling the init function
+         * The init accepts map engine as one parameter and a prepared map as another.
+         * All the other functionality is in the map_init
+         */
         import {init} from "./scripts/map_init.js";
         window.addEventListener("load", ()=>{
             let map = L.map('map', {zoomControl:false}).setView([0, 50], 2);
